@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+	<context:component-scan base-package="com.spring.security"/>
+	
+	<bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/view/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+    
+    <bean id="appAuthenticationEntryPoint" class="com.spring.security.entrypoint.AppAuthenticationEntryPoint">
+        <constructor-arg name="loginFormUrl" value="/services/login"/>
+    </bean>
+    
+    <bean id="successHandler" class="com.spring.security.handler.AppSuccessHandler"/>
+    
+    <bean id="failureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+        <constructor-arg name="defaultFailureUrl" value="/services/accessdenied"/>
+    </bean>
+    
+    <security:http pattern="/services/login" security="none"/>
+    <security:http pattern="/services/accessdenied" security="none"/>
+    
+    <security:http auto-config="true" use-expressions="true" entry-point-ref="appAuthenticationEntryPoint">
+        <!-- Interceptor urls -->
+        <security:intercept-url pattern="/" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/**" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/user**" access="hasRole('USER')" />
+        <security:intercept-url pattern="/admin**" access="hasRole('ADMIN')" />
+
+        <security:form-login login-page="/login"
+                             login-processing-url="/j_spring_security_check"
+                             authentication-success-handler-ref="successHandler"
+                             authentication-failure-handler-ref="failureHandler"
+                             username-parameter="username"
+                             password-parameter="password"
+                />
+
+        <!-- disabling csrf protection -->
+        <security:csrf disabled="true"/>
+    </security:http>
+    
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="testuser" password="testuser" authorities="ROLE_USER" />
+                <security:user name="admin" password="admin" authorities="ROLE_ADMIN" />
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+    
+</beans>
