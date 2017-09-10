@@ -12,7 +12,7 @@
 <br/><br/><br/><br/><br/><br/><br/>
 <div class="login-block">
     <form name='loginForm'
-                  action="<c:url value='../j_spring_security_check' />" method='POST'>
+                  action="<c:url value='j_spring_security_check' />" method='POST'>
         <h1>Login</h1>
         <input type="text" id="username" name="username" placeholder="Username"  />
         <input type="password" id="password" name="password" placeholder="Password" />

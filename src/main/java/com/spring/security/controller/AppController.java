@@ -50,19 +50,27 @@ public class AppController {
         return model;
     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException{
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-        return login(request,response);
-    }
+//    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+//    public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException{
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth != null) {
+//            new SecurityContextLogoutHandler().logout(request, response, auth);
+//        }
+//        return login(request,response);
+//    }
 
     @RequestMapping(value = {"/accessdenied"}, method = RequestMethod.GET)
     public ModelAndView accessDeniedPage() {
         ModelAndView model = new ModelAndView();
         model.addObject("message", "Either username or password is incorrect.");
+        model.setViewName("accessdenied");
+        return model;
+    }
+    
+    @RequestMapping(value = {"/verifyOTP"}, method = RequestMethod.GET)
+    public ModelAndView verifyOTP() {
+        ModelAndView model = new ModelAndView();
+        model.addObject("message", "going to send otp");
         model.setViewName("accessdenied");
         return model;
     }

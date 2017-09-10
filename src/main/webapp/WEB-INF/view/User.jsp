@@ -9,6 +9,6 @@
     ${title}<br/><br/>
     Dear ${user}, you are successfully logged into this application.
     <br/>
-    <a href="<c:url value='/services/logout' />">Logout</a>
+    <a href="<c:url value='/logout' />">Logout</a>
 </body>
 </html>

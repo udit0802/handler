@@ -47,11 +47,11 @@ public class AppSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
         }
 
         if (isAdmin(roles)) {
-            url = "/services/adminpage";
+            url = "/adminpage";
         } else if (isUser(roles)) {
-            url = "/services/userpage";
+            url = "/userpage";
         } else {
-            url = "/services/accessDenied";
+            url = "/accessDenied";
         }
 
         return url;

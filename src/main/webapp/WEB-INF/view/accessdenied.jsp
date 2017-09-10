@@ -7,8 +7,8 @@
 </head>
 <body>
     <h2> Access Denied </h2>
-    <br/>${message}<br
+    <br/>${message}<br>
 
-    Click here for<a href="<c:url value='/services/login' />"> Login</a>
+    Click here for<a href="<c:url value='/login' />"> Login</a>
 </body>
 </html>
