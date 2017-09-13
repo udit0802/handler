@@ -1,13 +1,22 @@
 package com.spring.security.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.security.business.UserService;
 import com.spring.security.entity.JwtUtil;
 import com.spring.security.entity.OTPResponse;
 import com.spring.security.entity.ResponseWrapper;
@@ -28,8 +37,8 @@ public class MerchandiserControllerAPI {
 	@Autowired
 	JwtUtil jwtUtil;
 
-//	@Autowired
-//	UserService userService;
+	@Autowired
+	UserService userService;
 
 //	@Autowired
 //	MerchandiserService merchandiserService;
@@ -67,34 +76,34 @@ public class MerchandiserControllerAPI {
 		return ResponseWrapper.getSuccessResponse(jwtUtil.verifyOTPMerchandiser(user));
 	}
 
-//	@RequestMapping(value="/logout")
-//	public @ResponseBody ResponseWrapper<String> logoutMerchandiser(HttpServletRequest request, HttpServletResponse response) throws ApplicationException{
+	@RequestMapping(value="/logout")
+	public @ResponseBody ResponseWrapper<String> logoutMerchandiser(HttpServletRequest request, HttpServletResponse response) throws ApplicationException{
 //		String methodName="logout for logoutMerchandiser";
-////		logger.debug(methodName+" starts");
-//
-////		auditLog.debug(methodName+" starts ");
-//		//check if that user exists in database
-//
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		if (auth != null) {
-////			logger.debug(methodName+"in auth not null");
-//			new SecurityContextLogoutHandler().logout(request, response, auth);
-//		}
-//		HttpSession session = request.getSession();
-//		if (session != null) {
-//			session.invalidate();
-//		}
-//
-//		//also delete token from database
-////		logger.debug(methodName+" phoneNo "+auth.getPrincipal().toString());
-//		userService.deletePreviousTokenMerchandiser((String)auth.getPrincipal());
-//
-//		//clear from data
-//
-//		userService.clearOTPOnLogoutMerchandiser((String)auth.getPrincipal());
-//
-//		return ResponseWrapper.getSuccessResponse("Success");
-//	}
+//		logger.debug(methodName+" starts");
+
+//		auditLog.debug(methodName+" starts ");
+		//check if that user exists in database
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null) {
+//			logger.debug(methodName+"in auth not null");
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+		}
+		HttpSession session = request.getSession();
+		if (session != null) {
+			session.invalidate();
+		}
+
+		//also delete token from database
+//		logger.debug(methodName+" phoneNo "+auth.getPrincipal().toString());
+		userService.deletePreviousTokenMerchandiser((String)auth.getPrincipal());
+
+		//clear from data
+
+		userService.clearOTPOnLogoutMerchandiser((String)auth.getPrincipal());
+
+		return ResponseWrapper.getSuccessResponse("Success");
+	}
 
 
 //	@RequestMapping(value="/retrieveStoreList", method = RequestMethod.GET)
@@ -246,6 +255,9 @@ public class MerchandiserControllerAPI {
 
 	////////////////////////////////////////////////////////////////////////
 
-
+	@RequestMapping(value="/getInfo", method = RequestMethod.GET)
+	public @ResponseBody ResponseWrapper<String> getInfo(@RequestParam("info") String info)throws ApplicationException{
+		return ResponseWrapper.getSuccessResponse(info);
+	}
 
 }

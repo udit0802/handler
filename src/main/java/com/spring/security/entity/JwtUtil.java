@@ -8,13 +8,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+
 import com.airtel.sms.utils.SMSAdapter;
 import com.spring.security.business.MerchandiserAPIService;
 import com.spring.security.business.UserService;
 import com.spring.security.exception.ApplicationException;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+
 @Component
 public class JwtUtil {
+	
+	@Value("${jwt.secret}")
+    private String secret;
     
     @Value("${shortCode}")
     private String shortCode;
@@ -36,6 +43,36 @@ public class JwtUtil {
     
     @Autowired
     MerchandiserAPIService merchandiserAPIService;
+    
+    /**
+     * Tries to parse specified String as a JWT token. If successful, returns User object with username, id and role prefilled (extracted from token).
+     * If unsuccessful (token is invalid or not containing all required user properties), simply returns null.
+     * 
+     * @param token the JWT token to parse
+     * @return the User object extracted from specified token or null if a token is invalid.
+     * @throws SmartAppException 
+     */
+    public User parseToken(String token) throws ApplicationException {
+    	String methodName="parseToken";
+            try {
+				Claims body = Jwts.parser()
+				        .setSigningKey(secret)
+				        .parseClaimsJws(token)
+				        .getBody();
+				if(body.getExpiration().getTime() <= new Date().getTime()){
+					throw new ApplicationException(new Status(401, "Session Expired!"));
+				}
+				User u = new User();
+				u.setOlmId(body.getSubject());
+				u.setRole((String) body.get("role"));
+				u.setName((String) body.get("name"));
+				return u;
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new ApplicationException(new Status(401,"Unauthorized"), e);
+			} 
+
+    }
 	
 	//get otp for merchandiser
 	public TokenResponseForOTP getRequestIdForOTPMerchandiser(String mobileNo) throws ApplicationException{
@@ -61,7 +98,7 @@ public class JwtUtil {
 				
 				if(date.getTime()>timeVlaue){
 					//clear corrosponding otp details and start inserting new one
-					userService.clearOTPOnLogoutAgency(mobileNo);
+					userService.clearOTPOnLogoutMerchandiser(mobileNo);
 					
 				}else{
 				

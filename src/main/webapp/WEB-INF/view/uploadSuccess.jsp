@@ -3,11 +3,11 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>HelloWorld page</title>
+    <title>Upload page</title>
 </head>
 <body>
     ${title}<br/><br/>
-    Dear ${user}, you are successfully logged into this application.
+    Dear ${user}, uploaded successfully.
     <br/>
     <a href="<c:url value='/logout' />">Logout</a>
 </body>
